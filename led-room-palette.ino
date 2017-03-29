@@ -23,7 +23,7 @@
 
 #define BRIGHTNESS_PIN  A0
 
-#define NUM_LEDS  150
+#define NUM_LEDS  55
 
 CRGBPalette16 currentPalette;
 
@@ -48,7 +48,7 @@ void setup() {
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm };
+SimplePatternList gPatterns = { water_colors,  rainbow, confetti, sinelon, juggle, bpm };
 
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 uint8_t gHue = 0; // rotating "base color" used by many of the patterns
@@ -85,6 +85,20 @@ void nextPattern()
   gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( gPatterns);
 }
 
+void water_colors() {
+  currentPalette = OceanColors_p;
+
+  static uint8_t paletteIndex = 0;
+  for(int i = 0; i < NUM_LEDS; i++) {   
+    // fade everything out
+    fadeToBlackBy(leds, NUM_LEDS, 50); // dim by 50/256
+
+    CRGB color = ColorFromPalette( currentPalette, gHue++, 255);
+    leds[i] = color;
+
+    if (gHue>240) gHue = 0;
+  }
+}
 
 void rainbow_shlomo(bool sparkle) {
   static int offset = 0;
