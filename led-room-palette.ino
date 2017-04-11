@@ -16,7 +16,7 @@
 #define CHIPSET    APA102
 #define COLOR_ORDER BGR  // most of the 10mm black APA102
 
-#define FRAMES_PER_SECOND  120
+#define FRAMES_PER_SECOND  30
 
 #define SWITCH_PIN 10
 #define LONG_PRESS_TIME 1000
@@ -51,8 +51,9 @@ typedef void (*SimplePatternList[])();
 SimplePatternList gPatterns = { water_colors,  rainbow, confetti, sinelon, juggle, bpm };
 
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
-uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 
+uint8_t gHue = 0; // rotating "base color" used by many of the patterns
+bool buttonDown = false;
 
 void loop() {
   // Call the current pattern function once, updating the 'leds' array
@@ -63,10 +64,13 @@ void loop() {
   FastLED.setBrightness(map(brightness, 0, 1023, 0, 255));
 
   btn.poll(NULL, NULL);
-  // need to add debounce on this
   // if held down, only want to switch when released
-  if (btn.pressed()) {
+  if (btn.pressed() && !buttonDown) {
     nextPattern();
+    buttonDown=true;
+  }
+  else if (!btn.pressed()) {
+    buttonDown=false;
   }
   
   FastLED.show();

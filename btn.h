@@ -1,4 +1,4 @@
-#define debounce 50 
+#define debounce 30 
 #define holdTime 1000 
 
 class Btn {
