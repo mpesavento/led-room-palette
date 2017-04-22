@@ -2,6 +2,13 @@
 // uses the pro-mini wearable device
 // arduino pro mini on a custom shield from Chromatech
 // Use "Pro Trinket 5V/16 MHz USB" board
+// Programmer: USBtinyISP
+//
+// Make sure have Additional Board Manager URI installed in Preferences:
+//    https://adafruit.github.io/arduino-board-index/package_adafruit_index.json
+//
+// In Boards Manager, select Contributed, and install Adafruit AVR boards by Adafruit
+//
 //************************************************
 #include <FastLED.h>
 #include "btn.h"
