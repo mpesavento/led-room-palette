@@ -11,6 +11,7 @@
 //
 //************************************************
 #include <FastLED.h>
+#include <EEPROM.h>
 #include "btn.h"
 
 
@@ -38,6 +39,9 @@ TBlendType currentBlending;
 CRGB leds[NUM_LEDS];
 Btn btn(SWITCH_PIN);
 
+uint8_t gCurrentPatternNumber = 255; // Index number of which pattern is current
+int eeprom_addr = 1; //current byte address we save pattern index to in EEPROM
+int eeprom_check = 0; // the byte to set if we have saved the eeprom value
 
 uint8_t num_leds = NUM_LEDS;
 
@@ -54,6 +58,15 @@ void setup() {
   currentBlending = LINEARBLEND;
 //  currentBlending = NOBLEND;
 
+  // load EEPROM
+  int value = EEPROM.read(eeprom_check);
+  if (value != 1) {
+    EEPROM.write(eeprom_check, 1);
+    EEPROM.write(eeprom_addr, 0);
+  }
+  else {
+    gCurrentPatternNumber = EEPROM.read(eeprom_addr);
+  }
 }
 
 
@@ -62,15 +75,12 @@ typedef void (*SimplePatternList[])();
 //SimplePatternList gPatterns = { water_colors,  rainbow_shlomo, confetti, sinelon, juggle, bpm };
 SimplePatternList gPatterns = { water_colors,  forest_colors, cloud_colors, lava_colors, heat_colors, party_colors};
 
-uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
-
 uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 bool buttonDown = false;
 
 void loop() {
   // Call the current pattern function once, updating the 'leds' array
   gPatterns[gCurrentPatternNumber]();
-
 
   uint16_t brightness = analogRead(BRIGHTNESS_PIN);
   FastLED.setBrightness(map(brightness, 0, 1023, 0, 255));
@@ -99,6 +109,7 @@ void nextPattern()
 {
   // add one to the current pattern number, and wrap around at the end
   gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( gPatterns);
+  EEPROM.write(eeprom_addr, gCurrentPatternNumber);
 }
 
 
