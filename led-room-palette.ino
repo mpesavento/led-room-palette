@@ -33,6 +33,7 @@
 #define NUM_LEDS  55
 
 CRGBPalette16 currentPalette;
+TBlendType currentBlending;
 
 CRGB leds[NUM_LEDS];
 Btn btn(SWITCH_PIN);
@@ -50,12 +51,15 @@ void setup() {
 
   // set initial palette
   currentPalette = OceanColors_p;
+  currentBlending = LINEARBLEND;
+//  currentBlending = NOBLEND;
+
 }
 
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { water_colors,  rainbow, confetti, sinelon, juggle, bpm };
+SimplePatternList gPatterns = { water_colors,  rainbow_shlomo, confetti, sinelon, juggle, bpm };
 
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 
@@ -98,18 +102,26 @@ void nextPattern()
 
 void water_colors() {
   currentPalette = OceanColors_p;
-
-  static uint8_t paletteIndex = 0;
-  for(int i = 0; i < NUM_LEDS; i++) {   
-    // fade everything out
-    fadeToBlackBy(leds, NUM_LEDS, 50); // dim by 50/256
-
-    CRGB color = ColorFromPalette( currentPalette, gHue++, 255);
-    leds[i] = color;
-
-    if (gHue>240) gHue = 0;
-  }
+  currentBlending = LINEARBLEND;
+  static uint8_t offset = 0;
+  FillLEDsFromPaletteColors(offset);
+  offset++;
 }
+
+void forest_colors() {
+  
+}
+
+
+void FillLEDsFromPaletteColors( uint8_t colorIndex)
+{
+    for( int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = ColorFromPalette( currentPalette, colorIndex, 255, currentBlending);
+        // the shift along color index changes the frequency of the pattern oscillations
+        colorIndex += 1; // from PaletteTrace.ino
+    }
+}
+
 
 void rainbow_shlomo(bool sparkle) {
   static int offset = 0;
