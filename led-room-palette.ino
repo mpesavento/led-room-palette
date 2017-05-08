@@ -162,6 +162,18 @@ void fill_mirror_from_palette(uint8_t colorIndex)
 }
 
 
+// define palette of colors at arbitrary indexes
+// first number is palette index, 0-255, other values are RGB colors
+// This will be stored in PROGMEM flash until loaded with CRGBPallete16
+DEFINE_GRADIENT_PALETTE( heatmap_gp){
+  0,      0,   0,   0, // black
+  128,  255,   0,   0, // red  
+  224,  255, 255,   0, // bright yellow
+  255,  255, 255, 255  // full white
+};
+//activate the palette like this:
+CRGBPalette16 myPal = heatmap_gp;
+
 void rainbow_shlomo(bool sparkle) {
   static int offset = 0;
   fill_rainbow(leds, num_leds, offset, 7);
