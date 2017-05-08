@@ -23,14 +23,14 @@
 #define CHIPSET    APA102
 #define COLOR_ORDER BGR  // most of the 10mm black APA102
 
-#define FRAMES_PER_SECOND  30
+#define FRAMES_PER_SECOND  100
 
 #define SWITCH_PIN 10
 #define LONG_PRESS_TIME 1000
 
 #define BRIGHTNESS_PIN  A0
 
-#define NUM_LEDS  55
+#define NUM_LEDS  300
 
 CRGBPalette16 currentPalette;
 TBlendType currentBlending;
@@ -89,7 +89,7 @@ void loop() {
   delayToSyncFrameRate(FRAMES_PER_SECOND);
 
   // do periodic update
-  EVERY_N_MILLISECONDS( 50 ) { gHue++; } // slowly cycle the "base color" through the rainbow
+  EVERY_N_MILLISECONDS( 80 ) { gHue++; } // slowly cycle the "base color" through the rainbow
 
 }
 
@@ -109,25 +109,25 @@ void nextPattern()
 void water_colors() {
   currentPalette = OceanColors_p;
   currentBlending = LINEARBLEND;
-  FillLEDsFromPaletteColors(gHue);
+  fill_mirror_from_palette(gHue);
 }
 
 void forest_colors() {
   currentPalette = ForestColors_p;
   currentBlending = LINEARBLEND;
-  FillLEDsFromPaletteColors(gHue);
+  fill_mirror_from_palette(gHue);
 }
 
 void lava_colors() {
   currentPalette = LavaColors_p;
   currentBlending = LINEARBLEND;
-  FillLEDsFromPaletteColors(gHue);
+  fill_mirror_from_palette(gHue);
 }
 
 void party_colors() {
   currentPalette = PartyColors_p;
   currentBlending = LINEARBLEND;
-  FillLEDsFromPaletteColors(gHue);
+  fill_mirror_from_palette(gHue);
 }
 
 void cloud_colors() {
@@ -150,6 +150,15 @@ void FillLEDsFromPaletteColors( uint8_t colorIndex)
         // the shift along color index changes the frequency of the pattern oscillations
         colorIndex += 1; // from PaletteTrace.ino
     }
+}
+
+void fill_mirror_from_palette(uint8_t colorIndex)
+{
+  for(int i=0; i < int(NUM_LEDS/2); i++) {
+    leds[i] = ColorFromPalette(currentPalette, colorIndex, 255, currentBlending);
+    leds[NUM_LEDS - i - 1] = leds[i];
+    colorIndex += 1; // the color shift frequency
+  }
 }
 
 
