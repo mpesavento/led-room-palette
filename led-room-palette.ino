@@ -59,7 +59,8 @@ void setup() {
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { water_colors,  rainbow_shlomo, confetti, sinelon, juggle, bpm };
+//SimplePatternList gPatterns = { water_colors,  rainbow_shlomo, confetti, sinelon, juggle, bpm };
+SimplePatternList gPatterns = { water_colors,  forest_colors, cloud_colors, lava_colors, heat_colors, party_colors};
 
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 
@@ -88,7 +89,7 @@ void loop() {
   delayToSyncFrameRate(FRAMES_PER_SECOND);
 
   // do periodic update
-  EVERY_N_MILLISECONDS( 20 ) { gHue++; } // slowly cycle the "base color" through the rainbow
+  EVERY_N_MILLISECONDS( 50 ) { gHue++; } // slowly cycle the "base color" through the rainbow
 
 }
 
@@ -100,16 +101,45 @@ void nextPattern()
   gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( gPatterns);
 }
 
+
+// palette names:
+// OceanColors_p, CloudColors_p, LavalColors_p, ForestColors_p, PartyColors_p, HeatColors_p
+// PartyColors_p is everything but the greens
+
 void water_colors() {
   currentPalette = OceanColors_p;
   currentBlending = LINEARBLEND;
-  static uint8_t offset = 0;
-  FillLEDsFromPaletteColors(offset);
-  offset++;
+  FillLEDsFromPaletteColors(gHue);
 }
 
 void forest_colors() {
-  
+  currentPalette = ForestColors_p;
+  currentBlending = LINEARBLEND;
+  FillLEDsFromPaletteColors(gHue);
+}
+
+void lava_colors() {
+  currentPalette = LavaColors_p;
+  currentBlending = LINEARBLEND;
+  FillLEDsFromPaletteColors(gHue);
+}
+
+void party_colors() {
+  currentPalette = PartyColors_p;
+  currentBlending = LINEARBLEND;
+  FillLEDsFromPaletteColors(gHue);
+}
+
+void cloud_colors() {
+  currentPalette = CloudColors_p;
+  currentBlending = LINEARBLEND;
+  FillLEDsFromPaletteColors(gHue);
+}
+
+void heat_colors() {
+  currentPalette = HeatColors_p;
+  currentBlending = LINEARBLEND;
+  FillLEDsFromPaletteColors(gHue);
 }
 
 
